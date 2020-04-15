@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Series on Sys4dm1nPub</title>
+    <link>https://sys4dm1npub.github.io/series/</link>
+    <description>Recent content in Series on Sys4dm1nPub</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Copyleft Sys4dm1nPub | [Vitae](https://github.com/dataCobra/hugo-vitae) theme for [Hugo](https://gohugo.io)</copyright>
+    
+	<atom:link href="https://sys4dm1npub.github.io/series/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+  </channel>
+</rss>
