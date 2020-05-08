@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Box local no Vagrant com KVM(Libvirt) - Sys4dm1nPub</title><meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta property="og:title" content="Box local no Vagrant com KVM(Libvirt)" />
+<meta property="og:description" content="Crie localmente suas próprias Boxes no Vagrant com KVM(libvirt)" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sys4dm1npub.github.io/posts/vagrant-box-local-kvm/" />
+<meta property="article:published_time" content="2020-05-07T16:18:36-03:00" />
+<meta property="article:modified_time" content="2020-05-07T16:18:36-03:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Box local no Vagrant com KVM(Libvirt)"/>
+<meta name="twitter:description" content="Crie localmente suas próprias Boxes no Vagrant com KVM(libvirt)"/>
+<link rel="stylesheet" type="text/css" media="screen" href="https://sys4dm1npub.github.io/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://sys4dm1npub.github.io/css/main.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://sys4dm1npub.github.io/css/all.css" />
+</head>
+
+<body>
+	<div class="container wrapper">
+		<div class="header">
+	
+		<div class="avatar">
+			<a href="https://sys4dm1npub.github.io/">
+				<img src="/img/choice.jpg" alt="Sys4dm1nPub" />
+			</a>
+		</div>
+	
+	
+		<h2 class="site-title">
+	
+		<a href="https://sys4dm1npub.github.io/">Sys4dm1nPub</a>
+	
+	</h2>
+	
+	<div class="site-description"><p>Bem-vindo(a) ao nosso blog! Nosso foco é conteúdo com qualidade.</p><nav class="nav social">
+			<ul class="flat"><li class="li-social"><a href="https://github.com/sys4dm1npub"><i title="Github" class="icons fab fa-github"></i></a></li><li class="li-social"><a href="/index.xml"><i title="RSS" class="icons fas fa-rss"></i></a></li></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/posts">Posts</a>
+			</li>
+			
+			<li>
+				<a href="/about">Sobre</a>
+			</li>
+			
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post">
+			<div class="author">
+				
+			</div>
+			<div class="post-header">
+				
+					<div class="meta">
+						<div class="date">
+							<span class="day">07</span>
+							<span class="rest">maio 2020</span>
+						</div>
+					</div>
+				
+				<div class="matter">
+					<h1 class="title">Box local no Vagrant com KVM(Libvirt)</h1>
+				</div>
+			</div>
+			<div class="markdown">
+				<p>Nesse post irei mostrar como criar suas <em>Boxes</em> localmente no <em>Vagrant</em> com o <em>KVM(libvirt)</em>.</p>
+<!-- raw HTML omitted -->
+<h2 id="introdução">Introdução</h2>
+<p>O <em><!-- raw HTML omitted -->Vagrant<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup><!-- raw HTML omitted --></em> é uma interessante ferramenta desenvolvida na linguagem <em>Ruby</em>, mantida pela empresa <em>Hashicorp</em> e licenciada sob a <em>MIT License</em>. Sua principal função é o gerenciamento de máquinas virtuais em um único fluxo de trabalho. Resumidamente, você usa um <em><!-- raw HTML omitted -->provider<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup><!-- raw HTML omitted --></em>, <em>VirtualBox</em> ou <em><!-- raw HTML omitted -->KVM(libvirt)<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup><!-- raw HTML omitted --></em> por exemplo, baixa uma <em><!-- raw HTML omitted -->Box<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup><!-- raw HTML omitted --></em> no <em><!-- raw HTML omitted -->Vagrant Cloud<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup><!-- raw HTML omitted --></em> e define o estado (ip, hostname, memória e etc) que você deseja nela em arquivo de configuração chamado <em><!-- raw HTML omitted -->Vagrantfile<sup id="fnref:6"><a href="#fn:6" class="footnote-ref" role="doc-noteref">6</a></sup><!-- raw HTML omitted --></em>.</p>
+<h2 id="motivação">Motivação</h2>
+<p>Se houver a necessidade de um ambiente mais customizado? Por exemplo, com um diferente particionamento no disco ou até mesmo outros tipos de <em>filesystems</em>. Pesquisando na <em><!-- raw HTML omitted -->interwebs<sup id="fnref:7"><a href="#fn:7" class="footnote-ref" role="doc-noteref">7</a></sup><!-- raw HTML omitted --></em>, descobri que no <em>Vagrant</em> existe a possibilidade de gerar localmente a sua prórpia <em>box</em> e usá-la no <em>hypervisor KVM(libvirt)</em>.</p>
+<h2 id="setup-do-ambiente">Setup do ambiente</h2>
+<p>Pacotes instalados:</p>
+<ul>
+<li>vagrant</li>
+<li>qemu-kvm</li>
+<li>libvirt-daemon</li>
+</ul>
+<p>Sistema Operacional do <em>Host</em>:</p>
+<ul>
+<li>Debian Testing</li>
+</ul>
+<p>Plugin do <em>Vagrant</em>:</p>
+<ul>
+<li>vagrant-libvirt</li>
+</ul>
+<h2 id="preparando-o-ambiente">Preparando o ambiente</h2>
+<p>Iremos dividir em duas etapas o procedimento para criação das <em>boxes</em> localmente. A primeira etapa será para criação e configuração da máquina virtual que será usada como <em>template</em> para a <em>box</em>. Já a segunda etapa será a preparação do ambiente para o <em>Vagrant</em> convertendo o disco da VM em uma image para a <em>box</em>.</p>
+<h3 id="1ª-etapa">1ª Etapa</h3>
+<h4 id="criação-da-máquina-virtual">Criação da máquina virtual</h4>
+<p>1.1 - Crie uma VM ao seu critério (particionamento, <em>filesystem</em> e etc), vou adotar que será instalado um <em>Ubuntu</em> 18.04.4 usando o <em>KVM(Libvirt)</em>.</p>
+<p>1.2 - Crie um novo usuário para o <em>Vagrant</em> na VM com o <em>Ubuntu</em> 18.04.4:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># adduser --disabled-password --gecos &#34;Vagrant User&#34; vagrant
+</code></pre></div><p>1.3 - Habilite o usuário recém criado na VM para usar o sudo sem senha:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># visudo -f /etc/sudoers.d/vagrant
+</code></pre></div><p>Acrescente esse conteúdo ao arquivo e salve no editor padrão que <code>visudo</code> irá abrir:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">vagrant ALL=(ALL) NOPASSWD:ALL
+</code></pre></div><p>1.4 - Caso não tenha na VM, instale o serviço de SSH:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># apt-get install openssh-server
+</code></pre></div><p>1.5 - Configure a autenticação via par de chaves (<em>SSH keys</em>) no SSH</p>
+<p>O <em>Vagrant</em> por padrão usa um par de chaves inseguras (<em><!-- raw HTML omitted -->insecure keypair<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup><!-- raw HTML omitted --></em>) para o acesso <em>SSH</em> às VMs, portanto para termos a automação com mais segurança, iremos gerar nossas próprias chaves e configurar o acesso remoto neste serviço para utilizá-las.</p>
+<p>Gere o par de chaves da seguinte maneira:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ssh-keygen -t rsa -b 2048 -q -f $HOME/.ssh/vagrant/vagrant_key -C &#39;vagrant&#39; -N &#39;&#39;
+</code></pre></div><p>Agora iremos criar o diretório <code>.ssh</code> no <code>home</code> do usuário <code>vagrant</code> para o arquivo <code>authorized_keys</code>, dar as devidas permissões e copiar a chave criada no passo anterior no <em>Host</em> (sua estação de trabalho) esse diretório na VM:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">ssh -l root IP-DA-VM \
+&#34;sudo -u vagrant mkdir -p /home/vagrant/.ssh; \
+sudo -u vagrant touch /home/vagrant/.ssh/authorized_keys; \
+chmod 700 /home/vagrant/.ssh; \
+chmod 600 /home/vagrant/.ssh/authorized_keys; \
+sh -c &#39;cat &gt;&gt; /home/vagrant/.ssh/authorized_keys&#39;&#34; &lt; ~/.ssh/vagrant/vagrant_key.pub
+</code></pre></div><p>OBS: Lembre-se substituir <code>IP-DA-VM</code> pelo <strong>endereço IP da VM</strong> no comando acima, além de ter o <em>SSH</em> com acesso habitado para o usuário <code>root</code>, o qual será desabilitado posteriormente.</p>
+<p>1.6 - Configure o serviço do <em>SSH</em> na VM</p>
+<p>Edite o arquivo <code>/etc/ssh/sshd_config</code> usando o editor de sua preferência no console, vim ou nano por exemplo:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># vim /etc/ssh/sshd_config
+</code></pre></div><p>Revisando/Alterando os seguintes parâmetros conforme abaixo:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">PermitRootLogin no
+
+PubKeyAuthentication yes
+
+AuthorizedKeysFile %h/.ssh/authorized_keys
+
+PermitEmptyPasswords no
+
+PasswordAuthentication no
+
+UseDNS no
+</code></pre></div><p>Salve e feche o arquivo.</p>
+<p>OBS: Não precisa reiniciar o serviço, pois a VM será desligada posteriormente.</p>
+<p>1.7 - Opcional… se quiser adiantar seu lado&hellip; instale alguns programas básicos na VM de sua preferência:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># apt-get -y install tcpdump strace ethstatus tree
+</code></pre></div><p>OBS: Para esse exemplo do <em>Ubuntu</em> 18.04.4, será necessário fazer um <em>workaround</em> para o problema das nomenclaturas da interface de rede no <em>Vagrant</em> com <em>KVM(Libvirt)</em>.</p>
+<p>Configure o parâmetro abaixo no <code>/etc/default/grub</code></p>
+<p>De:</p>
+<blockquote>
+<p><strong>GRUB_CMDLINE_LINUX=&rdquo;&quot;</strong></p>
+</blockquote>
+<p>Para:</p>
+<blockquote>
+<p><strong>GRUB_CMDLINE_LINUX=&quot;net.ifnames=0 biosdevname=0&rdquo;</strong></p>
+</blockquote>
+<p>E execute o comando para persistir a configuração no próximo boot:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># update-grub
+</code></pre></div><p>Por último, ajuste o arquivo do <em><!-- raw HTML omitted -->netplan<sup id="fnref:9"><a href="#fn:9" class="footnote-ref" role="doc-noteref">9</a></sup><!-- raw HTML omitted --></em>, o utilitário de configuração de rede do sistema, com o comando <code>sed</code>:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># sed -i.BKP &#39;s/enp1s0/eth0/g&#39; /etc/netplan/50-cloud-init.yaml
+</code></pre></div><p>Ele substituirá a string <code>enp1s0</code> para <code>eth0</code>, criando uma cópia de <em>backup</em> sem a alteração no arquivo <code>50-cloud-init.yaml.BKP</code>.</p>
+<p>1.8 - Finalizado tudo desligue a VM.</p>
+<h3 id="2ª-etapa">2ª Etapa</h3>
+<h4 id="configuração-do-ambiente-para-o-vagrant">Configuração do ambiente para o <em>Vagrant</em></h4>
+<p>A segunda parte consistirá em converter a <em>image</em>(disco) da VM da seção anterior para ser uma <em>box</em> no <em>Vagrant</em> e configurar os arquivos dele.</p>
+<p>2.1 - Crie um diretório temporário na sua estação de trabalho:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># mkdir /tmp/box &amp;&amp; cd /tmp/box
+
+</code></pre></div><p>2.2 - Baixe o script do repositório <em><!-- raw HTML omitted -->vagrant-libvirt<sup id="fnref:10"><a href="#fn:10" class="footnote-ref" role="doc-noteref">10</a></sup><!-- raw HTML omitted --></em>:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ wget https://raw.githubusercontent.com/vagrant-libvirt/vagrant-libvirt/master/tools/create_box.sh
+</code></pre></div><p>2.3 - Copie o disco da VM recém instalada localizado no diretório <em>padrão</em> do <em>KVM(libvirt)</em> renomeando-o:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># cp /var/lib/libvirt/images/NOME_DO_DISCO.qcow2 ubuntu1804.qcow2
+</code></pre></div><p>2.4 - Execute o script:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># bash create_box.sh ubuntu1804.qcow2
+</code></pre></div><p>Obterá como saída</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">==&gt; Creating box, tarring and gzipping
+./metadata.json
+./Vagrantfile
+./box.img
+Total bytes written: 345384960 (330MiB, 168MiB/s)
+==&gt; ubuntu1804.box created
+==&gt; You can now add the box:
+==&gt;   &#39;vagrant box add ubuntu1804.box --name ubuntu1804&#39;
+</code></pre></div><p>Após a execução será gerado o arquivo, nesse caso o <strong>ubuntu1804.box</strong>.</p>
+<p>2.5 - Importe o arquivo gerado anteriormente:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ vagrant box add ubuntu1804.box --name ubuntu1804
+</code></pre></div><p>Obterá como saída:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">==&gt; box: Box file was not detected as metadata. Adding it directly...
+==&gt; box: Adding box &#39;ubuntu1804&#39; (v0) for provider: 
+    box: Unpacking necessary files from: file:///tmp/box/ubuntu1804.box
+==&gt; box: Successfully added box &#39;ubuntu1804&#39; (v0) for &#39;libvirt&#39;!
+</code></pre></div><p>2.6 - Para conferir:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ vagrant box list
+ubuntu1804 (libvirt, 0)
+</code></pre></div><p>2.7 - Para remover:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ vagrant box remove ubuntu1804
+Removing box &#39;ubuntu1804&#39; (v0) with provider &#39;libvirt&#39;...
+Vagrant-libvirt plugin removed box only from you LOCAL ~/.vagrant/boxes directory
+From libvirt storage pool you have to delete image manually(virsh, virt-manager or by any other tool)
+</code></pre></div><p>2.8 - Crie uma pasta para seus projetos e dentro dela crie um <em>Vagrantfile</em>:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ mkdir mylabs &amp;&amp; cd mylabs
+</code></pre></div><p>Para criar o arquivo:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ cat &gt; Vagrantfile &lt;&lt;EOF
+Vagrant.configure(&#34;2&#34;) do |config|
+	config.vm.provider :libvirt do |libvirt|
+     	libvirt.host = &#34;localhost&#34;
+     	libvirt.uri = &#34;qemu:///system&#34;
+     	libvirt.management_network_name = &#34;default&#34;
+     	libvirt.management_network_address = &#34;192.168.122.0/24&#34;
+	end
+
+	config.ssh.insert_key = false
+	config.ssh.private_key_path = [&#34;~/.ssh/vagrant/vagrant_rsa_key&#34;]
+
+	config.vm.define :ubuntu1804 do |ubuntu1804|
+ 		ubuntu1804.vm.hostname = &#34;vm-ubuntu1804&#34;
+  		ubuntu1804.vm.box = &#34;ubuntu1804&#34;
+  		ubuntu1804.vm.provider :libvirt do |domain|
+    		domain.memory = 512
+    		domain.cpus = 1
+  		end
+ 	end
+end
+EOF
+</code></pre></div><p>OBS: Com essa configuração o Vagrant por padrão criará um compartilhamento <em>NFS</em> entre o diretório do projeto(mylabs) e a pasta /vagrant dentro da VM (<em><!-- raw HTML omitted -->synced folders<sup id="fnref:11"><a href="#fn:11" class="footnote-ref" role="doc-noteref">11</a></sup><!-- raw HTML omitted --></em>*), detalhe é necessário que o usuário local do seu sistema esteja também com o sudo configurado para o compartilhamento funcionar.</p>
+<p>Caso não queira, o <code>config.vm.define</code> deverá ficar assim</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">	config.vm.define :ubuntu1804 do |ubuntu1804|
+ 		ubuntu1804.vm.hostname = &#34;vm-ubuntu1804&#34;
+ 		ubuntu1804.vm.box = &#34;ubuntu1804&#34;
+ 		ubuntu1804.vm.synced_folder &#34;.&#34;, &#34;/vagrant&#34;, disabled: true
+ 		ubuntu1804.vm.provider :libvirt do |domain|
+    		domain.memory = 512
+    		domain.cpus = 1
+  		end
+ 	end
+</code></pre></div><p>Após terminar a edição do <code>Vagrantfile</code>, valide a sintaxe dele:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ vagrant validate
+Vagrantfile validated successfully.
+</code></pre></div><p>2.9 - E finalmente subimos a VM com o comando</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ vagrant up
+</code></pre></div><p>Para <em><!-- raw HTML omitted -->Debugging<sup id="fnref:12"><a href="#fn:12" class="footnote-ref" role="doc-noteref">12</a></sup><!-- raw HTML omitted --></em>, existe a possibilidade de iniciar com a variável de ambiente <code>VAGRANT_LOG</code> escolhendo o nível de detalhamento do log, por exemplo:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ VAGRANT_LOG=info vagrant up
+</code></pre></div><p>2.10 - Para acessar a VM:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ vagrant ssh
+</code></pre></div><p>E pronto! Agora você pode acompanhar/colaborar com os <em><!-- raw HTML omitted -->issues<sup id="fnref:13"><a href="#fn:13" class="footnote-ref" role="doc-noteref">13</a></sup><!-- raw HTML omitted --></em> também.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><a href="https://www.vagrantup.com/intro/index.html">https://www.vagrantup.com/intro/index.html</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p><a href="https://www.vagrantup.com/docs/providers/">https://www.vagrantup.com/docs/providers/</a> <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p><a href="https://www.linux-kvm.org/page/Main_Page">https://www.linux-kvm.org/page/Main_Page</a> <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p><a href="https://www.vagrantup.com/docs/boxes.html">https://www.vagrantup.com/docs/boxes.html</a> <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p><a href="https://app.vagrantup.com/boxes/search">https://app.vagrantup.com/boxes/search</a> <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:6" role="doc-endnote">
+<p><a href="https://www.vagrantup.com/docs/vagrantfile/">https://www.vagrantup.com/docs/vagrantfile/</a> <a href="#fnref:6" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:7" role="doc-endnote">
+<p><a href="https://leyhline.github.io/2019/02/16/creating-a-vagrant-base-box/">https://leyhline.github.io/2019/02/16/creating-a-vagrant-base-box/</a> <a href="#fnref:7" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:8" role="doc-endnote">
+<p><a href="https://github.com/hashicorp/vagrant/tree/master/keys">https://github.com/hashicorp/vagrant/tree/master/keys</a> <a href="#fnref:8" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:9" role="doc-endnote">
+<p><a href="https://netplan.io/">https://netplan.io/</a> <a href="#fnref:9" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:10" role="doc-endnote">
+<p><a href="https://github.com/vagrant-libvirt/vagrant-libvirt/">https://github.com/vagrant-libvirt/vagrant-libvirt/</a> <a href="#fnref:10" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:11" role="doc-endnote">
+<p><a href="https://www.vagrantup.com/docs/synced-folders/">https://www.vagrantup.com/docs/synced-folders/</a> <a href="#fnref:11" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:12" role="doc-endnote">
+<p><a href="https://www.vagrantup.com/docs/other/debugging.html">https://www.vagrantup.com/docs/other/debugging.html</a> <a href="#fnref:12" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:13" role="doc-endnote">
+<p><a href="https://github.com/vagrant-libvirt/vagrant-libvirt/issues">https://github.com/vagrant-libvirt/vagrant-libvirt/issues</a> <a href="#fnref:13" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+			</div>
+			<div class="tags">
+				
+				
+				
+				
+					
+					
+					
+						<div class="taxosfloating_left">
+							<p>Autores</p>
+						</div>
+						<div class="termsfloating_right">
+							<p>
+								
+									
+									
+										<a href="/autores/pericles-jr/"> pericles-jr </a>
+									
+									
+								
+							</p>
+						</div>
+						<div class="clearit"></div>
+					
+					
+					
+				
+					
+				
+					
+					
+					
+						<div class="taxosfloating_left">
+							<p>Tags</p>
+						</div>
+						<div class="termsfloating_right">
+							<p>
+								
+									
+									
+										<a href="/tags/kvm/"> kvm </a>
+									
+									
+								
+									
+									
+										<a href="/tags/libvirt/"> libvirt </a>
+									
+									
+								
+									
+									
+										<a href="/tags/vagrant/"> vagrant </a>
+									
+									
+								
+							</p>
+						</div>
+						<div class="clearit"></div>
+					
+					
+					
+				
+				
+			</div><div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'hugo-vitae';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div class="footertext"> © Copyleft Sys4dm1nPub | <a href="https://github.com/dataCobra/hugo-vitae">Vitae</a> theme for <a href="https://gohugo.io">Hugo</a> </div>
+	</nav>
+</div>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+</html>

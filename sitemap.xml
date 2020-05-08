@@ -4,6 +4,47 @@
   
   <url>
     <loc>https://sys4dm1npub.github.io/autores/</loc>
+    <lastmod>2020-05-07T16:18:36-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sys4dm1npub.github.io/posts/vagrant-box-local-kvm/</loc>
+    <lastmod>2020-05-07T16:18:36-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sys4dm1npub.github.io/tags/kvm/</loc>
+    <lastmod>2020-05-07T16:18:36-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sys4dm1npub.github.io/tags/libvirt/</loc>
+    <lastmod>2020-05-07T16:18:36-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sys4dm1npub.github.io/autores/pericles-jr/</loc>
+    <lastmod>2020-05-07T16:18:36-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sys4dm1npub.github.io/posts/</loc>
+    <lastmod>2020-05-07T16:18:36-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sys4dm1npub.github.io/</loc>
+    <lastmod>2020-05-07T16:18:36-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sys4dm1npub.github.io/tags/</loc>
+    <lastmod>2020-05-07T16:18:36-03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sys4dm1npub.github.io/tags/vagrant/</loc>
+    <lastmod>2020-05-07T16:18:36-03:00</lastmod>
   </url>
   
   <url>
@@ -12,14 +53,6 @@
   
   <url>
     <loc>https://sys4dm1npub.github.io/about/</loc>
-  </url>
-  
-  <url>
-    <loc>https://sys4dm1npub.github.io/</loc>
-  </url>
-  
-  <url>
-    <loc>https://sys4dm1npub.github.io/tags/</loc>
   </url>
   
 </urlset>

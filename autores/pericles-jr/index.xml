@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>pericles jr on Sys4dm1nPub</title>
+    <link>https://sys4dm1npub.github.io/autores/pericles-jr/</link>
+    <description>Recent content in pericles jr on Sys4dm1nPub</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© Copyleft Sys4dm1nPub | [Vitae](https://github.com/dataCobra/hugo-vitae) theme for [Hugo](https://gohugo.io)</copyright>
+    <lastBuildDate>Thu, 07 May 2020 16:18:36 -0300</lastBuildDate>
+    
+	<atom:link href="https://sys4dm1npub.github.io/autores/pericles-jr/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Box local no Vagrant com KVM(Libvirt)</title>
+      <link>https://sys4dm1npub.github.io/posts/vagrant-box-local-kvm/</link>
+      <pubDate>Thu, 07 May 2020 16:18:36 -0300</pubDate>
+      
+      <guid>https://sys4dm1npub.github.io/posts/vagrant-box-local-kvm/</guid>
+      <description>Nesse post irei mostrar como criar suas Boxes localmente no Vagrant com o KVM(libvirt).
+Introdução O Vagrant1 é uma interessante ferramenta desenvolvida na linguagem Ruby, mantida pela empresa Hashicorp e licenciada sob a MIT License. Sua principal função é o gerenciamento de máquinas virtuais em um único fluxo de trabalho. Resumidamente, você usa um provider2, VirtualBox ou KVM(libvirt)3 por exemplo, baixa uma Box4 no Vagrant Cloud5 e define o estado (ip, hostname, memória e etc) que você deseja nela em arquivo de configuração chamado Vagrantfile6.</description>
+    </item>
+    
+  </channel>
+</rss>
