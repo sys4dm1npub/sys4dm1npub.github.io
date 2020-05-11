@@ -120,7 +120,7 @@
 <p>O <em>Vagrant</em> por padrão usa um par de chaves inseguras (<em><!-- raw HTML omitted -->insecure keypair<sup id="fnref:8"><a href="#fn:8" class="footnote-ref" role="doc-noteref">8</a></sup><!-- raw HTML omitted --></em>) para o acesso <em>SSH</em> às VMs, portanto para termos a automação com mais segurança, iremos gerar nossas próprias chaves e configurar o acesso remoto neste serviço para utilizá-las.</p>
 <p>Gere o par de chaves da seguinte maneira:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ssh-keygen -t rsa -b 2048 -q -f $HOME/.ssh/vagrant/vagrant_key -C &#39;vagrant&#39; -N &#39;&#39;
-</code></pre></div><p>Agora iremos criar o diretório <code>.ssh</code> no <code>home</code> do usuário <code>vagrant</code> para o arquivo <code>authorized_keys</code>, dar as devidas permissões e copiar a chave criada no passo anterior no <em>Host</em> (sua estação de trabalho) esse diretório na VM:</p>
+</code></pre></div><p>Agora iremos criar o diretório <code>.ssh</code> no <code>home</code> do usuário <code>vagrant</code> para o arquivo <code>authorized_keys</code>, dar as devidas permissões e copiar a chave criada no passo anterior no <em>Host</em> (sua estação de trabalho) para o diretório criado na VM:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">ssh -l root IP-DA-VM \
 &#34;sudo -u vagrant mkdir -p /home/vagrant/.ssh; \
 sudo -u vagrant touch /home/vagrant/.ssh/authorized_keys; \
