@@ -225,7 +225,7 @@ Vagrant.configure(&#34;2&#34;) do |config|
  	end
 end
 EOF
-</code></pre></div><p>OBS: Com essa configuração o Vagrant por padrão criará um compartilhamento <em>NFS</em> entre o diretório do projeto(mylabs) e a pasta /vagrant dentro da VM (<em><!-- raw HTML omitted -->synced folders<sup id="fnref:11"><a href="#fn:11" class="footnote-ref" role="doc-noteref">11</a></sup><!-- raw HTML omitted --></em>*), detalhe é necessário que o usuário local do seu sistema esteja também com o sudo configurado para o compartilhamento funcionar.</p>
+</code></pre></div><p>OBS: Com essa configuração o Vagrant por padrão criará um compartilhamento <em>NFS</em> entre o diretório do projeto(mylabs) e a pasta /vagrant dentro da VM (<em><!-- raw HTML omitted -->synced folders<sup id="fnref:11"><a href="#fn:11" class="footnote-ref" role="doc-noteref">11</a></sup><!-- raw HTML omitted --></em>), detalhe é necessário que o usuário local do seu sistema esteja também com o sudo configurado para o compartilhamento funcionar.</p>
 <p>Caso não queira, o <code>config.vm.define</code> deverá ficar assim</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">	config.vm.define :ubuntu1804 do |ubuntu1804|
  		ubuntu1804.vm.hostname = &#34;vm-ubuntu1804&#34;
