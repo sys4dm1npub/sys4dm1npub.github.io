@@ -134,7 +134,7 @@ sh -c &#39;cat &gt;&gt; /home/vagrant/.ssh/authorized_keys&#39;&#34; &lt; ~/.ssh
 </code></pre></div><p>Revisando/Alterando os seguintes parâmetros conforme abaixo:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">PermitRootLogin no
 
-PubKeyAuthentication yes
+PubkeyAuthentication yes
 
 AuthorizedKeysFile %h/.ssh/authorized_keys
 
@@ -151,11 +151,11 @@ UseDNS no
 <p>Configure o parâmetro abaixo no <code>/etc/default/grub</code></p>
 <p>De:</p>
 <blockquote>
-<p><strong>GRUB_CMDLINE_LINUX=&rdquo;&quot;</strong></p>
+<p><strong>GRUB_CMDLINE_LINUX=&quot;&quot;</strong></p>
 </blockquote>
 <p>Para:</p>
 <blockquote>
-<p><strong>GRUB_CMDLINE_LINUX=&quot;net.ifnames=0 biosdevname=0&rdquo;</strong></p>
+<p><strong>GRUB_CMDLINE_LINUX=&ldquo;net.ifnames=0 biosdevname=0&rdquo;</strong></p>
 </blockquote>
 <p>E execute o comando para persistir a configuração no próximo boot:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"># update-grub
